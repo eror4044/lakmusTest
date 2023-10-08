@@ -1,0 +1,43 @@
+<div class="container">
+  <form [formGroup]="form">
+    <div class="row">
+      <h3>Дата: </h3>
+      <input type="datetime-local" formControlName="date">
+      <div *ngIf="form.get('date')?.hasError('dateInPast')">
+        Date cannot be in the past or empty.
+      </div>
+    </div>
+    <div class="wrapper">
+      <h2>Діагнози за ICPC-2</h2>
+    </div>
+    <div  formArrayName="conditions">
+      <div *ngFor="let conditionsControl of conditions_controls.controls; let i = index">
+        <div class="row" [formGroupName]="i">
+          <select id="diagnosis" formControlName="diagnosis"
+          (click)="handleDropdownClick()"
+          (focus)="handleDropdownClick()">
+            <ng-container *ngIf="isLoading; else optionsBlock">
+              <option value="" disabled>Loading...</option>
+            </ng-container>
+            <ng-template #optionsBlock>
+              <option value="" disabled>Select a diagnosis</option>
+              <option *ngFor="let diagnosis of diagnoses" [ngValue]="diagnosis">{{ diagnosis.name }}</option>
+            </ng-template>
+          </select>
+          <input type="text" id="comment" placeholder="коментар" formControlName="comment">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button class="add_btn" (click)="addDiagnosisField()">+ Додати ще</button>
+    </div>
+    <button type="submit" class="create_btn" (click)="handleSubmit()" [disabled]="!this.form.valid">Сформувати JSON</button>
+    <div class="wrapper">
+      <h3>JSON:</h3>
+      <div class="json-container">
+        <pre>{{textAreaValue}}</pre>
+      </div>
+    </div>
+  </form>
+</div>
